@@ -135,10 +135,10 @@ class PhotoGraphRAG:
 
 if __name__ == "__main__":
     photo_rag = PhotoGraphRAG(
-        neo4j_uri="bolt://44.201.130.123:7687",
-        neo4j_username="neo4j",
-        neo4j_password="authorization-hunk-curve",
-        openai_api_key="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"
+        neo4j_uri=os.getenv("NEO4J_URI"),
+        neo4j_username=os.getenv("NEO4J_USERNAME"),
+        neo4j_password=os.getenv("NEO4J_PASSWORD"),
+        openai_api_key=os.getenv("OPENAI_API_KEY")
     )
 
     photo_descriptions = {
