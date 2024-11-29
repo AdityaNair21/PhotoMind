@@ -1,12 +1,16 @@
 import OpenAI from 'openai';
 import fs from 'fs';
+import dotenv from "dotenv";
+
+// Load environment variables from the .env file
+dotenv.config();
 
 export class OpenAIService {
     private openai: OpenAI;
 
     constructor() {
         this.openai = new OpenAI({
-            apiKey: "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"
+            apiKey: process.env.OPENAI_API_KEY as string
         });
     }
 
