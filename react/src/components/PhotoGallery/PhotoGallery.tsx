@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import { Photo, ExtendedPhoto, NotificationState } from '../../types/types';
 import { api } from '../../utils/api';
 import { SearchBar } from './SearchBar';
@@ -8,8 +8,6 @@ import { PhotoGrid } from './PhotoGrid';
 import { PhotoPreview } from './PhotoPreview';
 import { NotificationSnackbar } from './NotificationSnackbar';
 import { UploadBackdrop } from './UploadBackdrop';
-
-
 
 
 export const PhotoGallery = () => {
@@ -117,17 +115,31 @@ export const PhotoGallery = () => {
                 isSearching={isSearching}
             />
 
-            <Box className="pt-20 px-4 pb-8">
-                <UploadButton
-                    handleFileUpload={handleFileUpload}
-                    isUploading={isUploading}
-                />
+            {/* Main content container with proper spacing */}
+            <Container
+                maxWidth="xl"
+                sx={{
+                    pt: '84px', // 64px (header height) + 20px padding
+                    pb: 4,
+                    px: { xs: 2, sm: 3, md: 4 } // Responsive padding
+                }}
+            >
+                {/* Upload button container */}
+                <Box sx={{ mb: 3 }}>
+                    <UploadButton
+                        handleFileUpload={handleFileUpload}
+                        isUploading={isUploading}
+                    />
+                </Box>
 
-                <PhotoGrid
-                    photos={photos}
-                    onPhotoClick={setSelectedPhoto}
-                />
-            </Box>
+                {/* Photo grid with proper spacing */}
+                <Box sx={{ mt: 2 }}>
+                    <PhotoGrid
+                        photos={photos}
+                        onPhotoClick={setSelectedPhoto}
+                    />
+                </Box>
+            </Container>
 
             <PhotoPreview
                 selectedPhoto={selectedPhoto}
@@ -143,3 +155,5 @@ export const PhotoGallery = () => {
         </Box>
     );
 };
+
+
