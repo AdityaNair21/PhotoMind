@@ -144,8 +144,10 @@ class PhotoGraphRAG:
                 strict_mode=True
         )
 
-        # Convert to graph documents and store in Neo4j
+        # Convert to graph documents
         graph_documents = llm_transformer.convert_to_graph_documents(documents)
+
+        # Store these created graph documents in Neo4j
         self.graph.add_graph_documents(
             graph_documents,
             baseEntityLabel=True,
@@ -192,7 +194,7 @@ class PhotoGraphRAG:
 
         prompt = ChatPromptTemplate.from_template(template)
 
-        def retriever(query: str) -> str:
+        def generateContext(query: str) -> str:
             # Get results from vector similarity search
             vector_results = [
                 f"Photo {doc.metadata['filename']}: {doc.page_content}"
@@ -229,7 +231,7 @@ class PhotoGraphRAG:
 
         # Build the chain
         self.retrieval_chain = (
-            {"context": retriever, "query": RunnablePassthrough()}
+            {"context": generateContext, "query": RunnablePassthrough()}
             | prompt
             | self.llm
             | StrOutputParser()
