@@ -36,7 +36,8 @@ export const uploadPhoto = async (req: Request, res: Response, next: NextFunctio
 
         console.log('Uploaded file:', req.file); // Debug log
 
-        const description = "this is a photo description";
+        // const description = "this is a photo description";
+        const description = await openaiService.generateImageDescription(req.file.filename)
 
         // Construct the URL path relative to the /images endpoint
         const photoUrl = `/images/${req.file.filename}`;
