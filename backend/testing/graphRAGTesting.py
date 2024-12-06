@@ -180,7 +180,7 @@ class PhotoGraphRAG:
         """
         if not hasattr(self, 'retrieval_chain'):
             template = """Given the following structured and unstructured search results about photos, 
-            analyze both the direct content and the relationships between elements to find the most relevant photo.
+            analyze both the direct content and the relationships between elements to find the most relevant photos.
 
             Consider these aspects when matching:
             1. Primary elements and objects in the scene
@@ -196,13 +196,16 @@ class PhotoGraphRAG:
 
             Query: {query}
 
+            Only choose photos that are directly relevent, be less photos the better. 
+
             Provide your response in this format:
-            Filename: <chosen_filename>
+            Filename: [<chosen_filename1>, <chosen_filename2>, ....]
             Primary Match Factors:
             - [List 2-3 key elements that strongly match the query]
-            Detailed Reasoning: [Explain how the photo's elements, relationships, and atmosphere align with the query]
-            Alternative Considerations: [Briefly mention why this photo was chosen over other potential matches]
+            Detailed Reasoning: [Explain how the chosens photo's elements, relationships, and atmosphere align with the query]
+
             """
+#             Alternative Considerations: [Briefly mention why this photo was chosen over other potential matches]
 
             prompt = ChatPromptTemplate.from_template(template)
 
@@ -348,9 +351,11 @@ def test_graphrag():
 
         # Test data
         photo_descriptions = {
-            "1.jpg": "A dry desert sand storm, a barren wasteland. The sky is blue and it looks very hot. There are hills of sand that seem to go endlessly.",
-            "2.jpg": "A serene mountain lake surrounded by snow-capped peaks. The water is crystal clear and reflects the mountains like a mirror.",
-            "3.jpg": "A bustling cityscape at sunset, with skyscrapers silhouetted against a vibrant orange sky. Lights are starting to glow in the windows.",
+            "supercar.jpg": "The image showcases a striking green sports car, prominently displayed with its unique butterfly doors wide open, creating a dramatic effect. The car features a sleek and aerodynamic design, characterized by sharp lines and an aggressive front end. It is parked on a winding road, surrounded by a scenic landscape of lush greenery and rocky formations, suggesting a mountainous or coastal setting. The sunlight bathes the scene, enhancing the car's glossy finish and highlighting its features. The combination of the car's modern design and the natural surroundings creates a visually appealing contrast. The scene captures a sense of luxury and performance, inviting admiration for both the vehicle and its picturesque environment. Notable details include the intricate wheel design and the sophisticated interior visible through the open door, emphasizing the car's high",
+            "chicken_fight.jpg": "The image captures a dynamic scene of two fighting roosters engaged in a fierce bout. Each bird is in mid-air, showcasing their powerful wings and muscular bodies. The rooster on the left has dark plumage with a glossy sheen, while the rooster on the right displays vibrant orange and brown feathers, emphasizing their contrasting appearances. The setting appears to be a dirt arena, likely outdoor, with a slightly blurred, indistinct background suggesting trees or foliage. Dust can be seen rising from the ground, adding to the intensity of the action. The focus on the birds highlights their aggressive postures, with each bird aiming to outmaneuver the other. Their spurs are prominently visible, indicating the competitive nature of this scene. Overall, the image conveys",
+            # "1.jpg": "A dry desert sand storm, a barren wasteland. The sky is blue and it looks very hot. There are hills of sand that seem to go endlessly.",
+            # "2.jpg": "A serene mountain lake surrounded by snow-capped peaks. The water is crystal clear and reflects the mountains like a mirror.",
+            # "3.jpg": "A bustling cityscape at sunset, with skyscrapers silhouetted against a vibrant orange sky. Lights are starting to glow in the windows.",
             # "4.jpg": "A lively birthday party with balloons, a colorful cake, and kids playing games. Everyone looks happy and excited to celebrate.",
             # "5.jpg": "A modern office with rows of desks and computers. The room is bright, with large windows letting in natural light.",
             # "6.jpg": "A quiet forest trail surrounded by tall trees. The ground is covered with leaves, and sunlight filters through the branches above.",

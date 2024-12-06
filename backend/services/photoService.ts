@@ -142,19 +142,30 @@ export class PhotoService {
             console.log("HERE IS THE FLASK RESPONSE")
             console.log(data)
 
-            // Parse the result from Flask
-            // The result is in format:
-            // Filename: <filename>
-            // Primary Match Factors: ...
-            // Detailed Reasoning: ...
-            // Alternative Considerations: ...
-            const resultLines = data.result.split('\n');
-            const filename = resultLines[0].split(': ')[1].trim();
+            // Extract filenames from the response
+            const filenameLine = data.result.split('\n').find(line => line.startsWith('Filename:'));
+            if (!filenameLine) {
+                throw new Error("Filename line not found in Flask response");
+            }
 
-            // First try to find the exact photo
-            const matchedPhoto = photos.find(p => p.url.includes(filename));
-            if (matchedPhoto) {
-                return [matchedPhoto];
+            // Parse the array of filenames
+            const filenames = filenameLine
+                .split(': ')[1] // Split to get the portion after "Filename: "
+                .trim() // Remove extra whitespace
+                .replace('[', '') // Remove opening bracket
+                .replace(']', '') // Remove closing bracket
+                .split(',') // Split into individual filenames
+                .map(filename => filename.trim()); // Remove whitespace around filenames
+
+            console.log("Parsed Filenames:", filenames);
+
+            // Find all matching photos
+            const matchedPhotos = filenames
+                .map(filename => photos.find(p => p.url.includes(filename)))
+                .filter((photo): photo is Photo => photo !== undefined);
+
+            if (matchedPhotos.length > 0) {
+                return matchedPhotos;
             }
 
             // Fallback to traditional text search if no match found
