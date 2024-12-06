@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 
 // Load environment variables from the .env file
 dotenv.config();
+console.log(process.env.OPENAI_API_KEY)
 
 export class OpenAIService {
     private openai: OpenAI;
