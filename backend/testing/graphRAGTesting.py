@@ -19,24 +19,36 @@ load_dotenv()
 class PhotoGraphRAG:
     def __init__(
         self,
-        neo4j_uri: str,
-        neo4j_username: str,
-        neo4j_password: str,
-
-        openai_api_key: str
     ):
-        os.environ["OPENAI_API_KEY"] = openai_api_key
-        os.environ["NEO4J_URI"] = neo4j_uri
-        os.environ["NEO4J_USERNAME"] = neo4j_username
-        os.environ["NEO4J_PASSWORD"] = neo4j_password
+        # os.environ["OPENAI_API_KEY"] = openai_api_key
+        # os.environ["NEO4J_URI"] = neo4j_uri
+        # os.environ["NEO4J_USERNAME"] = neo4j_username
+        # os.environ["NEO4J_PASSWORD"] = neo4j_password
 
         self.graph = Neo4jGraph()
         self.llm = ChatOpenAI(temperature=0, model_name="gpt-4o-mini")
         self.embeddings = OpenAIEmbeddings()
 
+        self.neo4j_uri = os.getenv("NEO4J_URI"),
+        self.neo4j_username = os.getenv("NEO4J_USERNAME"),
+        self.neo4j_password = os.getenv("NEO4J_PASSWORD"),
+        self.openai_api_key = os.getenv("OPENAI_API_KEY")
+
+    def get_knowledge_graph(self):
+        print("TESTING")
+        print(self.llm)
+        print("TESTINGDONE")
+        store = Neo4jVector.from_existing_index(
+            OpenAIEmbeddings(),
+            url=self.neo4j_uri,
+            username=self.neo4j_username,
+            password=self.neo4j_password,
+            index_name="photo_vectors",
+        )
+
     def build_knowledge_graph(self, photo_descriptions: Dict[str, str]):
 
-        print("Photo Descriptions:")
+        print("\nPhoto Descriptions:")
         print(photo_descriptions)
 
         """
@@ -50,6 +62,9 @@ class PhotoGraphRAG:
                 metadata={"filename": filename}
             )
             documents.append(doc)
+
+        print("\nDocuments:")
+        print(documents)
 
         # Extract entities and relationships using LLM
         llm_transformer = LLMGraphTransformer(
@@ -142,19 +157,18 @@ if __name__ == "__main__":
 
     print("Running main\n")
 
-    photo_rag = PhotoGraphRAG(
-        neo4j_uri=os.getenv("NEO4J_URI"),
-        neo4j_username=os.getenv("NEO4J_USERNAME"),
-        neo4j_password=os.getenv("NEO4J_PASSWORD"),
-        openai_api_key=os.getenv("OPENAI_API_KEY")
-    )
+    photo_rag = PhotoGraphRAG()
 
     print("PhotoGraphRAG Instantiated\n")
 
     photo_descriptions = {
-        "beach_sunset.jpg": "A stunning sunset over a tropical beach with palm trees silhouetted against an orange sky. The waves are gently lapping at the shore.",
+        "desert_storm.jpg": "A dry desert sand storm, a barren wasteland. The sky is blue and it looks very hot. There are hills of sand that seem to go endlessly.",
         "mountain_lake.jpg": "A serene mountain lake surrounded by snow-capped peaks. The water is crystal clear and reflects the mountains like a mirror.",
     }
+
+    # print("About to call get knowledge graphs\n")
+    # # Pull knowledge graph
+    # photo_rag.get_knowledge_graph()
 
     print("About to call build knowledge graphs\n")
     # Build knowledge graph
@@ -162,5 +176,5 @@ if __name__ == "__main__":
 
     # Search for photos
     result = photo_rag.search_photos(
-        "Picture with peaceful nature scenes with water")
+        "A wet swampy area")
     print(result)
