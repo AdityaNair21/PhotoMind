@@ -19,9 +19,10 @@ export const api = {
     },
 
     searchPhotos: async (query: string): Promise<Photo[]> => {
+        console.log("QUERY: " + query)
         try {
             const response = await axios.get(`${BASE_URL}/photos/search`, {
-                params: { query }
+                params: { query: query }
             });
             return response.data;
         } catch (error) {

@@ -16,12 +16,12 @@ export const getPhotos = async (req: Request, res: Response, next: NextFunction)
 
 export const searchPhotos = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { q } = req.query;
-        if (!q || typeof q !== 'string') {
+        const { query } = req.query;
+        console.log("QUERYsearchPhotos: " + query)
+        if (!query || typeof query !== 'string') {
             throw { statusCode: 400, message: 'Search query is required' };
         }
-
-        const photos = await photoService.searchPhotos(q);
+        const photos = await photoService.searchPhotos(query);
         res.json(photos);
     } catch (error) {
         next(error);
