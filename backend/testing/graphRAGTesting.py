@@ -300,9 +300,11 @@ def search_photos():
             return jsonify({"error": "No query provided"}), 400
 
         query = data['query']
+        print("SEARCH PHOTOS HAS BEEN CALLED")
+        print("QUERY: " + query)
 
         # Ensure retrieval chain is set up
-        photo_rag.setup_retrieval_chain()
+        # photo_rag.setup_retrieval_chain()
 
         start_time = time.time()
         result = photo_rag.search_photos(query)
@@ -349,11 +351,11 @@ def test_graphrag():
             "1.jpg": "A dry desert sand storm, a barren wasteland. The sky is blue and it looks very hot. There are hills of sand that seem to go endlessly.",
             "2.jpg": "A serene mountain lake surrounded by snow-capped peaks. The water is crystal clear and reflects the mountains like a mirror.",
             "3.jpg": "A bustling cityscape at sunset, with skyscrapers silhouetted against a vibrant orange sky. Lights are starting to glow in the windows.",
-            "4.jpg": "A lively birthday party with balloons, a colorful cake, and kids playing games. Everyone looks happy and excited to celebrate.",
-            "5.jpg": "A modern office with rows of desks and computers. The room is bright, with large windows letting in natural light.",
-            "6.jpg": "A quiet forest trail surrounded by tall trees. The ground is covered with leaves, and sunlight filters through the branches above.",
-            "7.jpg": "A stark, gray prison building with high walls and barbed wire. The yard is empty, and the atmosphere is somber.",
-            "8.jpg": "A sunny beach with families enjoying a picnic. There are umbrellas, blankets, and kids building sandcastles by the shore.",
+            # "4.jpg": "A lively birthday party with balloons, a colorful cake, and kids playing games. Everyone looks happy and excited to celebrate.",
+            # "5.jpg": "A modern office with rows of desks and computers. The room is bright, with large windows letting in natural light.",
+            # "6.jpg": "A quiet forest trail surrounded by tall trees. The ground is covered with leaves, and sunlight filters through the branches above.",
+            # "7.jpg": "A stark, gray prison building with high walls and barbed wire. The yard is empty, and the atmosphere is somber.",
+            # "8.jpg": "A sunny beach with families enjoying a picnic. There are umbrellas, blankets, and kids building sandcastles by the shore.",
         }
 
         # Test building knowledge graph
@@ -391,5 +393,5 @@ if __name__ == "__main__":
     test_graphrag()
 
     # For running the Flask server:
-    # port = int(os.getenv("PORT", 5000))
-    # app.run(host='0.0.0.0', port=port)
+    port = int(os.getenv("PORT", 7500))
+    app.run(host='0.0.0.0', port=port)
