@@ -1,3 +1,4 @@
+
 import os
 from dotenv import load_dotenv
 import time
@@ -98,25 +99,49 @@ class PhotoGraphRAG:
         # Extract entities and relationships using LLM
         llm_transformer = LLMGraphTransformer(
             llm=self.llm,
-            node_properties=[
-                "type",           # Type of entity (person, object, location, etc.)
-                "description",    # Detailed description
-                "color",         # Color information
-                "location",      # Spatial location in the image
-                "quantity"       # Number of instances if applicable
-            ],
-            relationship_properties=[
-                "description",    # Description of the relationship
-                "spatial",       # Spatial relationship (above, below, next to)
-                "action"         # Action-based relationship (playing, watching, etc.)
-            ],
-            allowed_relationships=[
-                "CONTAINS",
-                "LOCATED_IN",
-                "NEXT_TO",
-                "INTERACTING_WITH",
-                "PART_OF"
-            ]
+                allowed_nodes=[
+                    "Scene",           # Overall scene type
+                    "Landscape",       # Natural landscapes
+                    "Building",        # Built structures
+                    "Person",          # People
+                    "Activity",        # Activities
+                    "NaturalFeature", # Natural elements
+                    "TimeContext",    # Temporal aspects
+                    "Atmosphere",     # Mood/ambiance
+                    "Object",         # Physical objects
+                    "Weather",        # Weather conditions
+                    "Location"        # Specific locations
+                ],
+                allowed_relationships=[
+                    "CONTAINS",           # Basic containment
+                    "HAS_FEATURE",        # Scene features
+                    "LOCATED_IN",         # Spatial location
+                    "NEXT_TO",           # Adjacent relationships
+                    "PART_OF",           # Component relationships
+                    "INTERACTS_WITH",    # General interactions
+                    "CREATES",           # Causal relationships
+                    "INFLUENCES",        # Impact relationships
+                    "USED_IN",          # Object usage
+                    "EXPERIENCES"        # Experiential relationships
+                ],
+                node_properties=[
+                    "type",
+                    "description",
+                    "color",
+                    "atmosphere",
+                    "time_of_day",
+                    "weather",
+                    "activity_level",
+                    "importance"         # Added to help prioritize key elements
+                ],
+                relationship_properties=[
+                    "description",
+                    "spatial",
+                    "temporal",
+                    "impact",
+                    "strength"          # Added to indicate relationship strength
+                ],
+                strict_mode=True
         )
 
         # Convert to graph documents and store in Neo4j
@@ -140,18 +165,29 @@ class PhotoGraphRAG:
         """
         Set up the hybrid retrieval chain combining graph and vector search
         """
-        # Template for generating final response
         template = """Given the following structured and unstructured search results about photos, 
-        determine the most relevant photo filename and explain why it best matches the query.
+        analyze both the direct content and the relationships between elements to find the most relevant photo.
+
+        Consider these aspects when matching:
+        1. Primary elements and objects in the scene
+        2. Atmosphere and mood
+        3. Activities and interactions
+        4. Time of day and lighting
+        5. Spatial relationships and scene composition
+        6. Weather and environmental conditions
+        7. Overall scene type and setting
 
         Context:
         {context}
 
         Query: {query}
 
-        Return your response in the format:
+        Provide your response in this format:
         Filename: <chosen_filename>
-        Reasoning: <explanation>
+        Primary Match Factors:
+        - [List 2-3 key elements that strongly match the query]
+        Detailed Reasoning: [Explain how the photo's elements, relationships, and atmosphere align with the query]
+        Alternative Considerations: [Briefly mention why this photo was chosen over other potential matches]
         """
 
         prompt = ChatPromptTemplate.from_template(template)
@@ -241,7 +277,7 @@ if __name__ == "__main__":
 
         print("About to search for photos\n")
         start_time = time.time()
-        result = photo_rag.search_photos("Busy downtown")
+        result = photo_rag.search_photos("A group of people gathered together for a special occasion.")
         end_time = time.time()
         print(f"Photo search completed in {end_time - start_time:.2f} seconds\n")
 
