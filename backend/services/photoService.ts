@@ -125,10 +125,53 @@ export class PhotoService {
     }
 
     async searchPhotos(query: string): Promise<Photo[]> {
-        const lowercaseQuery = query.toLowerCase();
-        return photos.filter(photo =>
-            photo.description.toLowerCase().includes(lowercaseQuery)
-        );
+        try {
+
+            console.log("QUERY: " + query)
+            // Make request to Flask API
+            const response = await fetch(`${this.flaskApiUrl}/search_photos`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ query })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Flask API error: ${response.statusText}`);
+            }
+
+            const data: FlaskSearchResponse = await response.json();
+
+            // Parse the result from Flask
+            // The result is in format:
+            // Filename: <filename>
+            // Primary Match Factors: ...
+            // Detailed Reasoning: ...
+            // Alternative Considerations: ...
+            const resultLines = data.result.split('\n');
+            const filename = resultLines[0].split(': ')[1].trim();
+
+            // First try to find the exact photo
+            const matchedPhoto = photos.find(p => p.url.includes(filename));
+            if (matchedPhoto) {
+                return [matchedPhoto];
+            }
+
+            // Fallback to traditional text search if no match found
+            const lowercaseQuery = query.toLowerCase();
+            return photos.filter(photo =>
+                photo.description.toLowerCase().includes(lowercaseQuery)
+            );
+
+        } catch (error) {
+            console.error('Error searching photos via Flask:', error);
+            // Fallback to basic text search on error
+            const lowercaseQuery = query.toLowerCase();
+            return photos.filter(photo =>
+                photo.description.toLowerCase().includes(lowercaseQuery)
+            );
+        }
     }
 
     // photoService.ts

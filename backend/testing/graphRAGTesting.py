@@ -180,7 +180,7 @@ class PhotoGraphRAG:
         """
         if not hasattr(self, 'retrieval_chain'):
             template = """Given the following structured and unstructured search results about photos, 
-            analyze both the direct content and the relationships between elements to find the most relevant photo.
+            analyze both the direct content and the relationships between elements to find the most relevant photos.
 
             Consider these aspects when matching:
             1. Primary elements and objects in the scene
@@ -196,13 +196,16 @@ class PhotoGraphRAG:
 
             Query: {query}
 
+            Only choose photos that are directly relevent, be less photos the better. 
+
             Provide your response in this format:
-            Filename: <chosen_filename>
+            Filename: [<chosen_filename1>, <chosen_filename2>, ....]
             Primary Match Factors:
             - [List 2-3 key elements that strongly match the query]
-            Detailed Reasoning: [Explain how the photo's elements, relationships, and atmosphere align with the query]
-            Alternative Considerations: [Briefly mention why this photo was chosen over other potential matches]
+            Detailed Reasoning: [Explain how the chosens photo's elements, relationships, and atmosphere align with the query]
+
             """
+#             Alternative Considerations: [Briefly mention why this photo was chosen over other potential matches]
 
             prompt = ChatPromptTemplate.from_template(template)
 
