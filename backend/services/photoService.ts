@@ -132,11 +132,15 @@ export class PhotoService {
                 body: JSON.stringify({ query })
             });
 
+
             if (!response.ok) {
                 throw new Error(`Flask API error: ${response.statusText}`);
             }
 
+
             const data: FlaskSearchResponse = await response.json();
+            console.log("HERE IS THE FLASK RESPONSE")
+            console.log(data)
 
             // Parse the result from Flask
             // The result is in format:
