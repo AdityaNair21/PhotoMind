@@ -28,11 +28,25 @@ export const PhotoPreview: React.FC<PhotoPreviewProps> = ({
                 >
                     <CircleX className="h-5 w-5" />
                 </IconButton>
-                <img
-                    src={selectedPhoto.url}
-                    // alt={selectedPhoto.description}
-                    className="w-full h-auto"
-                />
+                <Box
+                    sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        overflow: 'hidden',
+                        maxHeight: '80vh', // Constrain the image height within viewport height
+                    }}
+                >
+                    <img
+                        src={selectedPhoto.url}
+                        alt={selectedPhoto.description || "Photo preview"}
+                        style={{
+                            maxWidth: '100%', // Image won't exceed container width
+                            maxHeight: '80vh', // Constrain image height to viewport
+                            objectFit: 'contain', // Maintain aspect ratio within bounds
+                        }}
+                    />
+                </Box>
                 <Box className="p-4">
                     <Typography variant="body2" className="text-gray-600">
                         {new Date(selectedPhoto.date).toLocaleDateString()}

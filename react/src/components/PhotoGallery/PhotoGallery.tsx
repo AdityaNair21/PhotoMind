@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Container } from '@mui/material';
+import { Box, Container, Typography } from '@mui/material';
 import { Photo, ExtendedPhoto, NotificationState } from '../../types/types';
 import { api } from '../../utils/api';
 import { SearchBar } from './SearchBar';
@@ -108,6 +108,15 @@ export const PhotoGallery = () => {
 
     return (
         <Box className="min-h-screen bg-gray-100">
+
+            {/* App name */}
+            <Box sx={{ textAlign: 'center', py: 0.5, position: 'relative', top: '75px' }}>
+                <Typography variant="h4" component="h1" fontWeight="bold">
+                    PhotoMind
+                </Typography>
+            </Box>
+
+
             <SearchBar
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}

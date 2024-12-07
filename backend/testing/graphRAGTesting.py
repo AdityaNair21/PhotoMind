@@ -213,7 +213,7 @@ class PhotoGraphRAG:
                 # Get results from vector similarity search
                 vector_results = [
                     f"Photo {doc.metadata['filename']}: {doc.page_content}"
-                    for doc in self.vector_store.similarity_search(query, k=3)
+                    for doc in self.vector_store.similarity_search(query, k=5)
                 ]
 
                 # Get results from graph pattern matching
@@ -370,8 +370,7 @@ def test_graphrag():
             "desert.jpg": "The image captures a vast desert landscape characterized by rolling sand dunes with intricate ripples in the sand, showcasing patterns created by the wind. The dunes rise and fall in gentle waves, reflecting golden hues under sunlight against a bright blue sky dotted with wispy clouds.",
             "tesla.jpg": "The image depicts a sleek silver Tesla car parked on a winding road through a picturesque landscape with rolling hills and mountains. The setting is illuminated by sunset's warm glow, with the car's shiny body reflecting sunlight, emphasizing its modern design and clean lines.",
             "prius.jpg": "The image features a sleek, modern silver car, possibly a hybrid or electric model, navigating an open road. The vehicle is positioned dynamically, suggesting motion and speed, with a streamlined design that highlights its aerodynamic shape."
-            }
-
+        }
         # Test building knowledge graph
         print("Testing knowledge graph construction...")
         start_time = time.time()
